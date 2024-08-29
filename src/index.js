@@ -1,6 +1,6 @@
+import dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import morgan from 'morgan';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
@@ -8,6 +8,7 @@ import { connect } from './db_Mongoose.js';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import productRoutes from './routes/productRoutes.js';
+import categoryRoutes from './routes/categoryRoutes.js';
 
 dotenv.config();
 
@@ -36,6 +37,7 @@ app.use(morgan('dev'));
 app.use('/', authRoutes);
 app.use('/shop/users', userRoutes);
 app.use('/products', productRoutes);
+app.use('/category', categoryRoutes);
 
 connect().then(() => {
   const PORT = process.env.PORT || 4000;
