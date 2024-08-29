@@ -7,6 +7,7 @@ import userRoutes from './routes/userRoutes.js';
 import { connect } from './db_Mongoose.js';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
+import productRoutes from './routes/productRoutes.js';
 
 dotenv.config();
 
@@ -34,6 +35,7 @@ app.use(morgan('dev'));
 
 app.use('/', authRoutes);
 app.use('/shop/users', userRoutes);
+app.use('/products', productRoutes);
 
 connect().then(() => {
   const PORT = process.env.PORT || 4000;
