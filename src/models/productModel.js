@@ -22,7 +22,6 @@ const productSchema = new mongoose.Schema({
   },
   subcategory: {
     type: String,
-    // Este enum es opcional y puedes eliminarlo si manejas las subcategorías dinámicamente desde el modelo Category
   },
   description: {
     type: String,
@@ -34,9 +33,9 @@ const productSchema = new mongoose.Schema({
     required: true,
     min: 0
   },
-  images: [String], // URLs de las imágenes
-  sizes: [String],  // Tallas disponibles (para ropa)
-  colors: [String], // Colores disponibles (para ropa)
+  images: [String],
+  sizes: [String],
+  colors: [String],
   discount: {
     value: {
       type: Number,
@@ -49,10 +48,10 @@ const productSchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
-// Índice compuesto para consultas frecuentes
+// Compound index for frequent queries
 productSchema.index({ category: 1, priceCOP: -1 });
 
-// Método para aplicar el descuento
+// Method to apply the discount
 productSchema.methods.applyDiscount = function () {
   const now = new Date();
   if (this.discount.startDate && this.discount.endDate) {
