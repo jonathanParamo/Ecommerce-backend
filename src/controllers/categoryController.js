@@ -38,9 +38,21 @@ export const getCategoryById = async (req, res) => {
 export const updateCategory = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, subcategories } = req.body;
-    const category = await Category.findByIdAndUpdate(id, { name, subcategories }, { new: true });
+    const { subcategories } = req.body;
+
+    // Verificar si 'subcategories' está definido y no es vacío
+    if (!subcategories || subcategories.length === 0) {
+      return res.status(400).json({ message: 'No subcategory provided' });
+    }
+
+    const category = await Category.findByIdAndUpdate(
+      id,
+      { $addToSet: { subcategories } },
+      { new: true }
+    );
+
     if (!category) return res.status(404).json({ message: 'Category not found' });
+
     res.status(200).json(category);
   } catch (err) {
     res.status(400).json({ message: err.message });
