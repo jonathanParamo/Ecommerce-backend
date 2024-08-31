@@ -9,6 +9,9 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import productRoutes from './routes/productRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
+import orderRoutes from './routes/orderRoutes.js';
+import paymentRoutes from './routes/paymentRoutes.js';
+import shippingRoutes from './routes/shppingRoutes.js';
 
 dotenv.config();
 
@@ -38,6 +41,9 @@ app.use('/', authRoutes);
 app.use('/shop/users', userRoutes);
 app.use('/products', productRoutes);
 app.use('/category', categoryRoutes);
+app.use('/orders', orderRoutes);
+app.use('/api', paymentRoutes);
+app.use('/api', shippingRoutes);
 
 connect().then(() => {
   const PORT = process.env.PORT || 4000;
