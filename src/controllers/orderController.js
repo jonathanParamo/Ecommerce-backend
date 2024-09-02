@@ -2,6 +2,7 @@ import Stripe from 'stripe';
 import dotenv from 'dotenv';
 import Order from '../models/orderModel.js';
 import Product from '../models/productModel.js';
+import User from '../models/userModel.js';
 
 dotenv.config();
 
@@ -9,7 +10,18 @@ const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
 export const createOrder = async (req, res) => {
   try {
-    const { userId, products, paymentMethodId } = req.body;
+    const { userId, products, cedula, paymentMethodId } = req.body;
+
+    // Find the user by ID
+    const user = await User.findById(userId);
+
+    // Check if the user has a registered 'cedula'
+    if (cedula) {
+      return sres.status(400).json({
+        message:
+        'Cedula is required to make a purchase. Please update your profile.'
+      })
+    }
 
     // Array to store products with updated details
     let updatedProducts = [];
@@ -19,7 +31,10 @@ export const createOrder = async (req, res) => {
       const product = await Product.findById(item.productId);
 
       if (!product) {
-        return res.status(404).json({ message: `Product with ID ${item.productId} not found` });
+        return res.status(404).json({
+          message:
+          `Product with ID ${item.productId} not found`
+        });
       }
 
       if (product.quantity < item.quantity) {
@@ -53,6 +68,7 @@ export const createOrder = async (req, res) => {
     const order = new Order({
       userId,
       products: updatedProducts,
+      cedula,
       totalAmount,
       status: 'pending',
     });
@@ -110,23 +126,6 @@ export const getOrders = async (req, res) => {
     res.status(500).json({ message: 'Error fetching orders', error });
   }
 };
-
-// export const updateOrderStatus = async (req, res) => {
-//   try {
-//     const { orderId } = req.params;
-//     const { status } = req.body;
-
-//     const order = await Order.findByIdAndUpdate(orderId, { status }, { new: true });
-
-//     if (!order) {
-//       return res.status(404).json({ message: 'Order not found' });
-//     }
-
-//     res.status(200).json(order);
-//   } catch (error) {
-//     res.status(500).json({ message: 'Error updating order status', error });
-//   }
-// };
 
 export const deleteOrder = async (req, res) => {
   try {
