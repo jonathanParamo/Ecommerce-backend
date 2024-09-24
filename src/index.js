@@ -23,14 +23,6 @@ const app = express();
 
 app.use(cookieParser());
 
-app.use(
-  helmet.contentSecurityPolicy({
-    directives: {
-      defaultSrc: ["'self'"],
-      imgSrc: ["'self'", "https://ecommerce-backend-wzv8.onrender.com"],
-    },
-  })
-);
 app.use(express.json());
 
 const limiter = rateLimit({
