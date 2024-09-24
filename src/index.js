@@ -1,12 +1,16 @@
+// Import required dependencies
 import dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
-import authRoutes from './routes/authRoutes.js';
-import userRoutes from './routes/userRoutes.js';
-import { connect } from './db_Mongoose.js';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
+import cookieParser from 'cookie-parser';
+
+// Import custom routes and database connection
+import { connect } from './db_Mongoose.js';
+import authRoutes from './routes/authRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 import productRoutes from './routes/productRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
@@ -16,6 +20,8 @@ import shippingRoutes from './routes/shppingRoutes.js';
 dotenv.config();
 
 const app = express();
+
+app.use(cookieParser());
 
 app.use(helmet());
 
@@ -28,22 +34,28 @@ const limiter = rateLimit({
 
 app.use(limiter);
 
-app.use(cors({
-  origin: "*",
-  methods: "GET,POST,PUT, DELETE",
-  // allowedHeaders: 'Content-Type,Authorization',
-  // credentials: true
-}))
+const corsOptions = {
+  origin: process.env.NODE_ENV === 'production'
+    ? ['https://elfrontDesplegado.com']
+    : ['http://localhost:3000', 'http://localhost:5173'],
+  methods: "GET,POST,PATCH,DELETE",
+  allowedHeaders: 'Content-Type, Authorization',
+  credentials: true
+};
+
+app.use(cors(corsOptions));
 
 app.use(morgan('dev'));
 
-app.use('/', authRoutes);
-app.use('/shop/users', userRoutes);
-app.use('/products', productRoutes);
-app.use('/category', categoryRoutes);
-app.use('/orders', orderRoutes);
-app.use('/api', paymentRoutes);
-app.use('/api', shippingRoutes);
+const apiBase = '/api/v1';
+
+app.use(`${apiBase}/auth`, authRoutes);
+app.use(`${apiBase}/users`, userRoutes);
+app.use(`${apiBase}/products`, productRoutes);
+app.use(`${apiBase}/categories`, categoryRoutes);
+app.use(`${apiBase}/orders`, orderRoutes);
+app.use(`${apiBase}/payments`, paymentRoutes);
+app.use(`${apiBase}/shipping`, shippingRoutes);
 
 connect().then(() => {
   const PORT = process.env.PORT || 4000;

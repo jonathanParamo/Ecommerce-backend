@@ -1,4 +1,3 @@
-// src/routes/shippingRoutes.js
 import express from 'express';
 import { handleShippingNotification } from '../controllers/shippingController.js';
 
