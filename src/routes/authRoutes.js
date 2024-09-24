@@ -11,6 +11,10 @@ const REFRESH_SECRET = process.env.REFRESH_SECRET || 'refresh_secret';
 
 router.use(cookieParser());
 
+router.get('/', (req, res) => {
+  res.send('Hello from the Shop API! 🌟 Where data magic happens. Crafted with care.');
+});
+
 router.get('/verify-token', (req, res) => {
   const token = req.cookies.jwt;
   const refreshToken = req.cookies.refreshToken;
@@ -44,7 +48,7 @@ router.get('/verify-token', (req, res) => {
           secure: process.env.NODE_ENV === 'production',
           sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
           maxAge: 24 * 60 * 60 * 1000,
-          domain: process.env.NODE_ENV === 'production' ? 'dominio-en-vercel.com' : 'http://localhost:4000/api/v1/',
+          domain: process.env.NODE_ENV === 'production' ? 'dominio-en-vercel.com' : undefined,
         });
 
         // Responder con éxito y el nuevo token
