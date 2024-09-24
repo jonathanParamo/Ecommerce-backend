@@ -23,8 +23,14 @@ const app = express();
 
 app.use(cookieParser());
 
-app.use(helmet());
-
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      imgSrc: ["'self'", "https://ecommerce-backend-wzv8.onrender.com"],
+    },
+  })
+);
 app.use(express.json());
 
 const limiter = rateLimit({
@@ -36,7 +42,9 @@ app.use(limiter);
 
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production'
-    ? ['https://elfrontDesplegado.com']
+    ? [
+      // 'https://elfrontDesplegado.com',
+    ]
     : ['http://localhost:3000', 'http://localhost:5173'],
   methods: "GET,POST,PATCH,DELETE",
   allowedHeaders: 'Content-Type, Authorization',
