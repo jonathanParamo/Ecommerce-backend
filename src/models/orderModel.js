@@ -13,6 +13,7 @@ const orderSchema = new mongoose.Schema({
   status: { type: String, default: 'pending' },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
+  sessionId: { type: String, required: true, unique: true },
 });
 
 const Order = mongoose.model('Order', orderSchema);

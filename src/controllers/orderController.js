@@ -8,104 +8,6 @@ dotenv.config();
 
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
-export const createOrder = async (req, res) => {
-  try {
-    const { userId, products, cedula, paymentMethodId } = req.body;
-
-    // Find the user by ID
-    const user = await User.findById(userId);
-
-    // Check if the user has a registered 'cedula'
-    if (cedula) {
-      return sres.status(400).json({
-        message:
-        'Cedula is required to make a purchase. Please update your profile.'
-      })
-    }
-
-    // Array to store products with updated details
-    let updatedProducts = [];
-
-    // Iterate over each product in the cart
-    for (let item of products) {
-      const product = await Product.findById(item.productId);
-
-      if (!product) {
-        return res.status(404).json({
-          message:
-          `Product with ID ${item.productId} not found`
-        });
-      }
-
-      if (product.quantity < item.quantity) {
-        return res.status(400).json({
-          message: `Insufficient quantity for product ${product.name}. Available: ${product.quantity}`,
-        });
-      }
-
-      // Apply discount using the model method
-      const finalPrice = product.applyDiscount();
-
-      // Check if the price is a valid number
-      if (isNaN(finalPrice) || isNaN(item.quantity)) {
-        return res.status(400).json({ message: 'Invalid price or quantity' });
-      }
-
-      // Add the product with updated details
-      updatedProducts.push({
-        productId: product._id,
-        quantity: item.quantity,
-        price: finalPrice,
-      });
-    }
-
-    // Calculate the totalAmount with the updated prices
-    const totalAmount = updatedProducts.reduce((acc, product) => {
-      return acc + (product.quantity * product.price);
-    }, 0);
-
-    // Create an order with the updated products
-    const order = new Order({
-      userId,
-      products: updatedProducts,
-      cedula,
-      totalAmount,
-      status: 'pending',
-    });
-
-    await order.save();
-
-    // Update the product quantity in the database
-    for (let item of updatedProducts) {
-      await Product.findByIdAndUpdate(item.productId, {
-        $inc: { quantity: -item.quantity },
-      });
-    }
-
-    // Create Payment Intent
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: totalAmount,
-      currency: 'usd',
-      payment_method: paymentMethodId,
-      automatic_payment_methods: {
-        enabled: true,
-        allow_redirects: 'never',
-      },
-      confirm: true,
-    });
-
-    // Update the order status if the payment was successful
-    if (paymentIntent.status === 'succeeded') {
-      order.status = 'paid';
-      await order.save();
-    }
-
-    res.status(201).json({ order, paymentIntent });
-  } catch (error) {
-    res.status(500).json({ message: 'Error creating order', error });
-  }
-};
-
 export const getOrderById = async (req, res) => {
   try {
     const { orderId } = req.params;
@@ -120,8 +22,34 @@ export const getOrderById = async (req, res) => {
 
 export const getOrders = async (req, res) => {
   try {
-    const orders = await Order.find().populate('userId').populate('products.productId');
-    res.status(200).json(orders);
+    const { status, page = 1, limit = 10 } = req.query;
+
+    let filter = {};
+    if (status) {
+      filter.status = status;
+    }
+
+    const pageNumber = parseInt(page, 10);
+    const limitNumber = parseInt(limit, 10);
+
+    const skip = (pageNumber - 1) * limitNumber;
+
+    const orders = await Order.find(filter)
+      .populate('userId')
+      .populate('products.productId')
+      .skip(skip)
+      .limit(limitNumber);
+
+    // Calcular el número total de órdenes (sin paginación) para saber cuántas páginas hay
+    const totalOrders = await Order.countDocuments(filter);
+
+    // Devolver las órdenes junto con información sobre la paginación
+    res.status(200).json({
+      totalOrders,
+      totalPages: Math.ceil(totalOrders / limitNumber),
+      currentPage: pageNumber,
+      orders,
+    });
   } catch (error) {
     res.status(500).json({ message: 'Error fetching orders', error });
   }
@@ -139,7 +67,7 @@ export const deleteOrder = async (req, res) => {
 
 export const updateOrderStatus = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { orderId } = req.params;
     const { status } = req.body;
 
     // Validar el nuevo estado
@@ -148,7 +76,7 @@ export const updateOrderStatus = async (req, res) => {
       return res.status(400).json({ message: 'Invalid status' });
     }
 
-    const order = await Order.findById(id);
+    const order = await Order.findById(orderId);
     if (!order) {
       return res.status(404).json({ message: 'Order not found' });
     }
@@ -163,3 +91,123 @@ export const updateOrderStatus = async (req, res) => {
   }
 };
 
+
+
+export const createCheckoutSession = async (req, res) => {
+  try {
+    const { userId, products, cedula } = req.body;
+
+    let updatedProducts = [];
+    for (let item of products) {
+      const product = await Product.findById(item.productId);
+      if (!product) {
+        return res.status(404).json({ message: `Product with ID ${item.productId} not found` });
+      }
+      if (product.quantity < item.quantity) {
+        return res.status(400).json({ message: `Insufficient quantity for product ${product.name}. Available: ${product.quantity}` });
+      }
+
+      const finalPrice = product.applyDiscount();
+      updatedProducts.push({
+        productId: product._id,
+        quantity: item.quantity,
+        price: finalPrice,
+        name: product.name,
+      });
+    }
+
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: updatedProducts.map(product => ({
+        price_data: {
+          currency: 'usd',
+          product_data: {
+            name: product.name,
+          },
+          unit_amount: product.price * 100,
+        },
+        quantity: product.quantity,
+      })),
+      mode: 'payment',
+      success_url: `${process.env.PUBLIC_SITE_URL}/?session_id={CHECKOUT_SESSION_ID}&user_id=${userId}&cedula=${cedula}&products=${JSON.stringify(updatedProducts)}`,
+      cancel_url: `${process.env.PUBLIC_SITE_URL_CANCEL}`,
+    });
+
+    res.status(201).json({ url: session.url });
+  } catch (error) {
+    console.error('Error creating checkout session:', error);
+    res.status(500).json({ message: 'Error creating checkout session', error });
+  }
+};
+
+export const createOrderAfterPayment = async (req, res) => {
+  const { sessionId, userId, products, cedula } = req.body;
+
+  try {
+    // Verifica el estado de la sesión de pago en Stripe
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+
+    if (session.payment_status === 'paid') {
+      const existingOrder = await Order.findOneAndUpdate(
+        { sessionId },
+        {},
+        { upsert: false } // No permitir la creación en este punto
+      );
+
+      if (existingOrder) {
+        return res.status(400).json({ message: 'Order already exists for this session' });
+      }
+
+      // Si no existe la orden, creamos una nueva
+      const order = new Order({
+        userId,
+        products,
+        cedula,
+        totalAmount: session.amount_total / 100,
+        status: 'pending',
+        sessionId,
+      });
+
+      await order.save();
+
+      // Actualizamos el inventario
+      for (let item of products) {
+        await Product.findByIdAndUpdate(item.productId, {
+          $inc: { quantity: -item.quantity },
+        });
+      }
+
+      return res.status(201).json({ message: 'Order created successfully' });
+    } else {
+      return res.status(400).json({ message: 'Payment not completed' });
+    }
+  } catch (error) {
+    if (error.code === 11000) {
+      return res.status(400).json({ message: 'Order already exists for this session' });
+    } else {
+      console.error('Error verifying payment session:', error);
+      return res.status(500).json({ message: 'Error verifying payment session', error });
+    }
+  }
+};
+
+
+export const getMonthlySales = async (req, res) => {
+  try {
+    const sales = await Order.aggregate([
+      {
+          $group: {
+              _id: { $month: '$createdAt' },
+              totalSales: { $sum: '$totalAmount' },
+          },
+      },
+      {
+          $sort: { _id: 1 },
+      },
+    ]);
+
+    res.json(sales);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

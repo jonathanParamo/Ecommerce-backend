@@ -1,4 +1,3 @@
-// src/services/shippingService.js
 import Order from '../models/orderModel.js';
 
 export const handleShippingNotificationService = async (orderId) => {
