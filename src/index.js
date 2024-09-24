@@ -45,6 +45,9 @@ app.use(morgan('dev'));
 
 const apiBase = '/api/v1';
 
+app.get('/', (req, res) => {
+  res.send('Hello from the Shop API! 🌟 Where data magic happens. Crafted with care.');
+})
 app.use(`${apiBase}/auth`, authRoutes);
 app.use(`${apiBase}/users`, userRoutes);
 app.use(`${apiBase}/products`, productRoutes);
