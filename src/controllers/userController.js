@@ -66,7 +66,7 @@ export const createUser = async (req, res) => {
       secure: process.env.NODE_ENV === 'production',
       sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
       maxAge: 24 * 60 * 60 * 1000,
-      domain: process.env.NODE_ENV === 'production' ? 'dominio-en-vercel.com' : undefined,
+      domain: process.env.NODE_ENV === 'production' ? 'dominio-en-vercel.com' : 'http://localhost:5173' || 'http://localhost:3000',
     };
 
     res.cookie('jwt', token, cookieOptions);
@@ -129,7 +129,7 @@ export const loginUser = async (req, res) => {
       secure: process.env.NODE_ENV === 'production',
       sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
       maxAge: 24 * 60 * 60 * 1000,
-      domain: process.env.NODE_ENV === 'production' ? 'dominio-en-vercel.com' : undefined,
+      domain: process.env.NODE_ENV === 'production' ? 'dominio-en-vercel.com' : 'http://localhost:5173' || 'http://localhost:3000',
     }
 
     res.cookie('jwt', token, cookieOptions);
@@ -199,7 +199,7 @@ export const createAdmin = async (req, res) => {
       secure: process.env.NODE_ENV === 'production',
       sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
       maxAge: 24 * 60 * 60 * 1000,
-      domain: process.env.NODE_ENV === 'production' ? 'dominio-en-vercel.com' : undefined,
+      domain: process.env.NODE_ENV === 'production' ? 'dominio-en-vercel.com' : 'http://localhost:5173' || 'http://localhost:3000',
     };
 
     res.cookie('jwt', token, cookieOptions);
@@ -247,7 +247,7 @@ export const loginAdmin = async (req, res) => {
       secure: process.env.NODE_ENV === 'production',
       sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
       maxAge: 24 * 60 * 60 * 1000,
-      domain: process.env.NODE_ENV === 'production' ? 'dominio-en-vercel.com' : undefined,
+      domain: process.env.NODE_ENV === 'production' ? 'dominio-en-vercel.com' : 'http://localhost:5173' || 'http://localhost:3000',
     };
 
     res.cookie('jwt', token, cookieOptions);
