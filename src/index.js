@@ -35,7 +35,7 @@ app.use(limiter);
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production' ? 'https://dominio-en-vercel.com' : 'http://localhost:5173' || 'http://localhost:3000',
   methods: "GET,POST,PATCH,DELETE",
-  allowedHeaders: 'Content-Type, Authorization',
+  allowedHeaders: 'Content-Type',
   credentials: true
 };
 
