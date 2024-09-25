@@ -16,7 +16,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/verify-token', (req, res) => {
-  const token = req.cookies.token;
+  const token = req.cookies.jwt;
   console.log('Received Token:', token);
   const refreshToken = req.cookies.refreshToken;
 
