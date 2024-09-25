@@ -16,7 +16,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/verify-token', (req, res) => {
-  const token = req.cookies.token;
+  const token = req.cookies;
   console.log('Received Token:', token);
   const refreshToken = req.cookies.refreshToken;
 
@@ -50,7 +50,7 @@ router.get('/verify-token', (req, res) => {
           maxAge: 24 * 60 * 60 * 1000, // 1 día
         };
 
-        res.cookie('jwt', token, cookieOptions);
+        res.cookie('jwt', newAccessToken, cookieOptions);
 
         // Responder con éxito y el nuevo token
         return res.json({ valid: true, user: refreshDecoded });
