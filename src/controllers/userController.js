@@ -66,8 +66,6 @@ export const createUser = async (req, res) => {
       secure: true,
       sameSite: 'None',
       maxAge: 24 * 60 * 60 * 1000,
-      domain: 'ecommerce-front-kappa-mocha.vercel.app',
-
     };
 
     res.cookie('jwt', token, cookieOptions);
@@ -130,8 +128,6 @@ export const loginUser = async (req, res) => {
       secure: true,
       sameSite: 'None',
       maxAge: 24 * 60 * 60 * 1000,
-      domain: 'ecommerce-front-kappa-mocha.vercel.app',
-
     };
 
     res.cookie('jwt', token, cookieOptions);
@@ -201,8 +197,6 @@ export const createAdmin = async (req, res) => {
       secure: true,
       sameSite: 'None',
       maxAge: 24 * 60 * 60 * 1000,
-      domain: 'ecommerce-front-kappa-mocha.vercel.app',
-
     };
 
     res.cookie('jwt', token, cookieOptions);
@@ -246,8 +240,6 @@ export const loginAdmin = async (req, res) => {
       secure: true,
       sameSite: 'None',
       maxAge: 24 * 60 * 60 * 1000,
-      domain: 'ecommerce-front-kappa-mocha.vercel.app',
-
     };
 
     res.cookie('jwt', token, cookieOptions);
