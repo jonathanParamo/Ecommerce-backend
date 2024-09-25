@@ -48,7 +48,7 @@ router.get('/verify-token', (req, res) => {
           secure: process.env.NODE_ENV === 'production',
           sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
           maxAge: 24 * 60 * 60 * 1000,
-          domain: 'http://localhost:5173' || 'http://localhost:3000',
+          domain: process.env.NODE_ENV === 'production' ? 'dominio-en-vercel.com' : undefined,
         });
 
         // Responder con éxito y el nuevo token
