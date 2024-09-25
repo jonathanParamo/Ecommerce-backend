@@ -33,7 +33,7 @@ const limiter = rateLimit({
 app.use(limiter);
 
 const corsOptions = {
-  origin: 'https://ecommerce-front-kappa-mocha.vercel.app/' || 'http://localhost:3000',
+  origin: 'https://ecommerce-front-kappa-mocha.vercel.app/',
   methods: "GET,POST,PATCH,DELETE",
   allowedHeaders: 'Content-Type',
   credentials: true
