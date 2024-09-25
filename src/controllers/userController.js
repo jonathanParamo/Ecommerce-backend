@@ -247,7 +247,7 @@ export const loginAdmin = async (req, res) => {
       secure: process.env.NODE_ENV === 'production',
       sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
       maxAge: 24 * 60 * 60 * 1000,
-      domain: 'localhost',
+      domain: 'https://ecommerce-front-kappa.vercel.app',
     };
 
     res.cookie('jwt', token, cookieOptions);

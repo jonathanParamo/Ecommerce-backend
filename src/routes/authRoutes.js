@@ -17,6 +17,7 @@ router.get('/', (req, res) => {
 
 router.get('/verify-token', (req, res) => {
   const token = req.cookies;
+  console.log('Received Token:', token);
   const refreshToken = req.cookies.refreshToken;
 
   if (!token) {
@@ -48,7 +49,7 @@ router.get('/verify-token', (req, res) => {
           secure: process.env.NODE_ENV === 'production',
           sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
           maxAge: 24 * 60 * 60 * 1000,
-          domain: 'localhost',
+          domain: 'https://ecommerce-front-kappa.vercel.app',
         });
 
         // Responder con éxito y el nuevo token
