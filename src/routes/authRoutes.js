@@ -43,14 +43,14 @@ router.get('/verify-token', (req, res) => {
           { expiresIn: '15m' }
         );
 
-        // Enviar el nuevo token de vuelta al cliente en una cookie
-        res.cookie('jwt', newAccessToken, {
+        const cookieOptions = {
           httpOnly: true,
           secure: true,
           sameSite: 'None',
-          maxAge: 24 * 60 * 60 * 1000,
-          domain: 'ecommerce-front-kappa-mocha.vercel.app',
-        });
+          maxAge: 24 * 60 * 60 * 1000, // 1 día
+        };
+
+        res.cookie('jwt', token, cookieOptions);
 
         // Responder con éxito y el nuevo token
         return res.json({ valid: true, user: refreshDecoded });
