@@ -66,7 +66,7 @@ export const createUser = async (req, res) => {
       secure: process.env.NODE_ENV === 'production',
       sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
       maxAge: 24 * 60 * 60 * 1000,
-      domain: process.env.NODE_ENV === 'production' ? 'dominio-en-vercel.com' : undefined,
+      domain: 'https://ecommerce-front-kappa-mocha.vercel.app/',
     };
 
     res.cookie('jwt', token, cookieOptions);
@@ -129,7 +129,7 @@ export const loginUser = async (req, res) => {
       secure: process.env.NODE_ENV === 'production',
       sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
       maxAge: 24 * 60 * 60 * 1000,
-      domain: process.env.NODE_ENV === 'production' ? 'dominio-en-vercel.com' : undefined,
+      domain: 'https://ecommerce-front-kappa-mocha.vercel.app/',
     }
 
     res.cookie('jwt', token, cookieOptions);
@@ -199,7 +199,7 @@ export const createAdmin = async (req, res) => {
       secure: process.env.NODE_ENV === 'production',
       sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
       maxAge: 24 * 60 * 60 * 1000,
-      domain: process.env.NODE_ENV === 'production' ? 'dominio-en-vercel.com' : undefined,
+      domain: 'https://ecommerce-front-kappa-mocha.vercel.app/',
     };
 
     res.cookie('jwt', token, cookieOptions);
@@ -247,7 +247,8 @@ export const loginAdmin = async (req, res) => {
       secure: process.env.NODE_ENV === 'production',
       sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
       maxAge: 24 * 60 * 60 * 1000,
-      domain: 'https://ecommerce-front-kappa.vercel.app',
+      domain: 'https://ecommerce-front-kappa-mocha.vercel.app/',
+
     };
 
     res.cookie('jwt', token, cookieOptions);
