@@ -46,10 +46,10 @@ router.get('/verify-token', (req, res) => {
         // Enviar el nuevo token de vuelta al cliente en una cookie
         res.cookie('jwt', newAccessToken, {
           httpOnly: true,
-          secure: process.env.NODE_ENV === 'production',
-          sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
+          secure: true,
+          sameSite: 'None',
           maxAge: 24 * 60 * 60 * 1000,
-          domain: 'https://ecommerce-front-kappa-mocha.vercel.app/',
+          domain: 'ecommerce-front-kappa-mocha.vercel.app',
         });
 
         // Responder con éxito y el nuevo token

@@ -63,10 +63,11 @@ export const createUser = async (req, res) => {
 
     const cookieOptions = {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
+      secure: true,
+      sameSite: 'None',
       maxAge: 24 * 60 * 60 * 1000,
-      domain: 'https://ecommerce-front-kappa-mocha.vercel.app/',
+      domain: 'ecommerce-front-kappa-mocha.vercel.app',
+
     };
 
     res.cookie('jwt', token, cookieOptions);
@@ -126,11 +127,12 @@ export const loginUser = async (req, res) => {
 
     const cookieOptions = {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
+      secure: true,
+      sameSite: 'None',
       maxAge: 24 * 60 * 60 * 1000,
-      domain: 'https://ecommerce-front-kappa-mocha.vercel.app/',
-    }
+      domain: 'ecommerce-front-kappa-mocha.vercel.app',
+
+    };
 
     res.cookie('jwt', token, cookieOptions);
 
@@ -196,10 +198,11 @@ export const createAdmin = async (req, res) => {
 
     const cookieOptions = {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
+      secure: true,
+      sameSite: 'None',
       maxAge: 24 * 60 * 60 * 1000,
-      domain: 'https://ecommerce-front-kappa-mocha.vercel.app/',
+      domain: 'ecommerce-front-kappa-mocha.vercel.app',
+
     };
 
     res.cookie('jwt', token, cookieOptions);
@@ -239,15 +242,11 @@ export const loginAdmin = async (req, res) => {
     );
 
     const cookieOptions = {
-      // httpOnly: true,
-      // secure: process.env.NODE_ENV === 'production',
-      // sameSite: 'strict',
-      // maxAge: 24 * 60 * 60 * 1000,
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
+      secure: true,
+      sameSite: 'None',
       maxAge: 24 * 60 * 60 * 1000,
-      domain: 'https://ecommerce-front-kappa-mocha.vercel.app/',
+      domain: 'ecommerce-front-kappa-mocha.vercel.app',
 
     };
 
