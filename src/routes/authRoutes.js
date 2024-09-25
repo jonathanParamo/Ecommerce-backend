@@ -16,7 +16,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/verify-token', (req, res) => {
-  const token = req.cookies.jwt;
+  const token = req.cookies;
   const refreshToken = req.cookies.refreshToken;
 
   if (!token) {
@@ -48,7 +48,7 @@ router.get('/verify-token', (req, res) => {
           secure: process.env.NODE_ENV === 'production',
           sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
           maxAge: 24 * 60 * 60 * 1000,
-          domain: 'http://localhost:5173/',
+          domain: 'localhost',
         });
 
         // Responder con éxito y el nuevo token
