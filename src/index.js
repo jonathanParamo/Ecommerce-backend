@@ -33,7 +33,7 @@ const limiter = rateLimit({
 app.use(limiter);
 
 const allowedOrigins = [
-  'https://jade-admin.vercel.app/',
+  'https://jade-admin.vercel.app',
   'https://ecommerce-client-self-nine.vercel.app'
 ];
 
