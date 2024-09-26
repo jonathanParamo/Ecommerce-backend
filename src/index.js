@@ -46,7 +46,7 @@ const corsOptions = {
     }
   },
   methods: "GET,POST,PATCH,DELETE",
-  allowedHeaders: 'Content-Type',
+  allowedHeaders: 'Content-Type, Authorization',
   credentials: true
 };
 
