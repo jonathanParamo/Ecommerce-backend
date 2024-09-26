@@ -223,6 +223,10 @@ export const loginAdmin = async (req, res) => {
       return res.status(400).json({ message: 'No user found with this email' });
     }
 
+    if(user.role !== 'admin') {
+      return res.status(400).json({ message: 'Access denied' });
+    }
+
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
