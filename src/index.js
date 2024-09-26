@@ -32,7 +32,10 @@ const limiter = rateLimit({
 
 app.use(limiter);
 
-const allowedOrigins = ['https://ecommerce-front-kappa-mocha.vercel.app'];
+const allowedOrigins = [
+  'https://ecommerce-front-kappa-mocha.vercel.app',
+  'https://ecommerce-client-self-nine.vercel.app'
+];
 
 const corsOptions = {
   origin: function (origin, callback) {
