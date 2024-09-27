@@ -2,7 +2,6 @@ import Stripe from 'stripe';
 import dotenv from 'dotenv';
 import Order from '../models/orderModel.js';
 import Product from '../models/productModel.js';
-import User from '../models/userModel.js';
 
 dotenv.config();
 
@@ -151,14 +150,14 @@ export const createOrderAfterPayment = async (req, res) => {
       const existingOrder = await Order.findOneAndUpdate(
         { sessionId },
         {},
-        { upsert: false } // No permitir la creación en este punto
+        { upsert: false }
       );
 
       if (existingOrder) {
         return res.status(400).json({ message: 'Order already exists for this session' });
       }
 
-      // Si no existe la orden, creamos una nueva
+      // Si no existe la orden, se crea
       const order = new Order({
         userId,
         products,
@@ -170,7 +169,7 @@ export const createOrderAfterPayment = async (req, res) => {
 
       await order.save();
 
-      // Actualizamos el inventario
+      // Actualizar inventario
       for (let item of products) {
         await Product.findByIdAndUpdate(item.productId, {
           $inc: { quantity: -item.quantity },
