@@ -14,8 +14,6 @@ import userRoutes from './routes/userRoutes.js';
 import productRoutes from './routes/productRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
-import paymentRoutes from './routes/paymentRoutes.js';
-import shippingRoutes from './routes/shppingRoutes.js';
 
 dotenv.config();
 
@@ -33,8 +31,8 @@ const limiter = rateLimit({
 app.use(limiter);
 
 const allowedOrigins = [
-  'https://jade-admin.vercel.app',
-  'https://ecommerce-client-self-nine.vercel.app'
+  process.env.ALLOWED_ORIGINS_ONE,
+  process.env.ALLOWED_ORIGINS_TWO,
 ];
 
 const corsOptions = {
@@ -57,15 +55,15 @@ app.use(morgan('dev'));
 const apiBase = '/api/v1';
 
 app.get('/', (req, res) => {
-  res.send('Hello from the Shop API! 🌟 Where data magic happens. Crafted with care.');
-})
+  res.send(`🌟 Welcome to the Shop API! ✨ Your gateway to a seamless shopping experience.
+  Where every request is handled with precision, and every product crafted with love. 💫 Happy Shopping! 🛍️`);
+});
+
 app.use(`${apiBase}/auth`, authRoutes);
 app.use(`${apiBase}/users`, userRoutes);
 app.use(`${apiBase}/products`, productRoutes);
 app.use(`${apiBase}/categories`, categoryRoutes);
 app.use(`${apiBase}/orders`, orderRoutes);
-app.use(`${apiBase}/payments`, paymentRoutes);
-app.use(`${apiBase}/shipping`, shippingRoutes);
 
 connect().then(() => {
   const PORT = process.env.PORT || 4000;
