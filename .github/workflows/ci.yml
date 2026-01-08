@@ -2,7 +2,7 @@ name: CI Backend
 
 on:
   push:
-    branches: [dev, test, preprod, main]
+    branches: ["**"]
   pull_request:
     branches: [dev, test, preprod, main]
 
